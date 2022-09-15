@@ -20,6 +20,7 @@ public class Myframe extends JFrame
     JMenuItem saveFromMenu;
     JMenuItem addFromMenu;
     JMenuItem deleteFromMenu;
+    JMenuItem saveAsFromMenu;
 
     JPanel southPanel;
     JPanel centerPanel;
@@ -35,6 +36,8 @@ public class Myframe extends JFrame
     JTextField inputTextField;
 
     String userName;
+
+    JFileChooser theFileChooser;
 
     
 
@@ -74,15 +77,21 @@ public class Myframe extends JFrame
 
         save = new JButton("save");
         southPanel.add(save);
+
         saveAs = new JButton("saveAs");
         southPanel.add(saveAs);
+        saveAs.addActionListener(this);
+
         add = new JButton("add");
         add.addActionListener(this);
         southPanel.add(add);
+
         delete = new JButton("delete");
         southPanel.add(delete);
+
         sort = new JButton("sort");
         southPanel.add(sort);
+
         exit = new JButton("exit");
         exit.addActionListener(this);
         southPanel.add(exit);
@@ -91,6 +100,7 @@ public class Myframe extends JFrame
         //===================================setting up the JMenu Bar  //============================================
         menuBar = new JMenuBar();
         add(menuBar,BorderLayout.NORTH);
+        
 
         theMenuOnTheBar = new JMenu("File");
         menuBar.add(theMenuOnTheBar);
@@ -106,16 +116,21 @@ public class Myframe extends JFrame
 
         addFromMenu = new JMenuItem("add");
         theMenuOnTheBar.add(addFromMenu);
+        addFromMenu.addActionListener(this);
+
+        saveAsFromMenu = new JMenuItem("saveAs");
+        theMenuOnTheBar.add(saveAsFromMenu);
+        saveAsFromMenu.addActionListener(this);
 
 
         //=======================================setting up Input Text Field //================================
         
-        inputTextField = new JTextField(30);
+/*        inputTextField = new JTextField(30);
         centerPanel = new JPanel();
         centerPanel.setBackground(Color.GRAY);
         add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(inputTextField);
-
+ */
     }
 
 
@@ -133,7 +148,27 @@ public class Myframe extends JFrame
 
             userName = JOptionPane.showInputDialog("Enter a name");  //userName will hold the response from the user
             record = new TripRecord(userName);
+            justAListModel.addElement(record);
 
+        }
+        else if(e.getActionCommand().equals("saveAs"))
+        {
+            int savedOrNot;
+            theFileChooser = new JFileChooser();
+            savedOrNot = theFileChooser.showSaveDialog(null);        // if returns 0 they saved file if 1 they exited
+
+        
+        }
+        else if(e.getActionCommand().equals("save"))
+        {
+
+        }
+        else if(e.getActionCommand().equals("remove"))
+        {
+
+        }
+        else if(e.getActionCommand().equals("load"))
+        {
 
         }
         
