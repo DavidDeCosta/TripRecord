@@ -1,11 +1,14 @@
 import javax.swing.*;                           //for JButton
 import javax.swing.event.*;                    //for ChangeListener
+
+import org.w3c.dom.events.MouseEvent;
+
 import java.awt.event.*;                       // for ActionListener
-import java.io.*;
+import java.io.File;
 import java.awt.*;                             // for Dimension and Toolkit
 
 public class Myframe extends JFrame
-                        implements ActionListener, ListSelectionListener
+                        implements ActionListener, ListSelectionListener, MouseListener
 {
     //=======================================DATA MEMBERS =====================================================
 
@@ -21,6 +24,7 @@ public class Myframe extends JFrame
     JMenuItem addFromMenu;
     JMenuItem deleteFromMenu;
     JMenuItem saveAsFromMenu;
+    JMenuItem clear;
 
     JPanel southPanel;
     JPanel centerPanel;
@@ -39,7 +43,8 @@ public class Myframe extends JFrame
 
     JFileChooser theFileChooser;
 
-    
+    JList<String> displayList;                           // displays their names
+    JScrollPane tripScrollPane;
 
 
 
@@ -53,6 +58,7 @@ public class Myframe extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            //when close frame the program stops
         setTitle("Project 2 Trip Record");
 
+
         addComponents();
 
         setVisible(true);
@@ -63,9 +69,10 @@ public class Myframe extends JFrame
         
         //======================= setting up the JList to view //===================================================
         justAListModel = new MyListModel();
-        add(justAListModel.tripScrollPane, BorderLayout.WEST);
-
-
+        displayList = new JList(justAListModel);
+        tripScrollPane = new JScrollPane(displayList);
+        add(tripScrollPane, BorderLayout.CENTER);
+        
         //======================= setting up south Panel for buttons //===============================================
         southPanel = new JPanel();
         southPanel.setBackground(Color.GRAY);
@@ -84,9 +91,14 @@ public class Myframe extends JFrame
 
         add = new JButton("add");
         add.addActionListener(this);
+        add.setToolTipText("alt+a , add name");
+        add.setMnemonic('A');                //press alt + a to add
         southPanel.add(add);
 
         delete = new JButton("delete");
+        delete.addActionListener(this);
+        delete.setToolTipText("alt + d, to delete");
+        delete.setMnemonic('d');             //press alt + d to delete
         southPanel.add(delete);
 
         sort = new JButton("sort");
@@ -112,6 +124,7 @@ public class Myframe extends JFrame
         theMenuOnTheBar.add(saveFromMenu);
 
         deleteFromMenu = new JMenuItem("delete");
+        deleteFromMenu.addActionListener(this);
         theMenuOnTheBar.add(deleteFromMenu);
 
         addFromMenu = new JMenuItem("add");
@@ -122,15 +135,11 @@ public class Myframe extends JFrame
         theMenuOnTheBar.add(saveAsFromMenu);
         saveAsFromMenu.addActionListener(this);
 
+        clear = new JMenuItem("clear");
+        theMenuOnTheBar.add(clear);
+        clear.addActionListener(this);
 
-        //=======================================setting up Input Text Field //================================
-        
-/*        inputTextField = new JTextField(30);
-        centerPanel = new JPanel();
-        centerPanel.setBackground(Color.GRAY);
-        add(centerPanel, BorderLayout.CENTER);
-        centerPanel.add(inputTextField);
- */
+ 
     }
 
 
@@ -145,39 +154,116 @@ public class Myframe extends JFrame
         }
         else if(e.getActionCommand().equals("add"))
         {
-
-            userName = JOptionPane.showInputDialog("Enter a name");  //userName will hold the response from the user
-            record = new TripRecord(userName);
-            justAListModel.addElement(record);
-
+            handleAdd();
         }
         else if(e.getActionCommand().equals("saveAs"))
         {
-            int savedOrNot;
-            theFileChooser = new JFileChooser();
-            savedOrNot = theFileChooser.showSaveDialog(null);        // if returns 0 they saved file if 1 they exited
-
-        
+            handleSaveAs();
         }
         else if(e.getActionCommand().equals("save"))
         {
 
         }
-        else if(e.getActionCommand().equals("remove"))
+        else if(e.getActionCommand().equals("delete"))
         {
-
+            handleDelete();
         }
         else if(e.getActionCommand().equals("load"))
         {
 
         }
+        else if(e.getActionCommand().equals("clear"))
+        {
+            justAListModel.clear();
+            justAListModel.numberOfTripRecords = 0;                    //sets the list to empty
+        }
         
     }
 
 
+    void handleAdd()
+    {
+        userName = JOptionPane.showInputDialog("Enter a name");  //userName will hold the response from the user
+        record = new TripRecord(userName);
+        justAListModel.addElement(record);
+        justAListModel.numberOfTripRecords += 1;
+        System.out.println("There are " + justAListModel.numberOfTripRecords + " record in the list");
+    }
+
+    void handleDelete()
+    {
+        int index;
+        index = displayList.getSelectedIndex();
+        if(index != -1)
+        {
+        justAListModel.remove(index);
+        justAListModel.numberOfTripRecords -= 1;
+        System.out.println("There are " + justAListModel.numberOfTripRecords + " record in the list");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "select something to remove");
+        }
+    }
+
+    void handleSaveAs()
+    {
+        String theFileSaveName;
+        int savedOrNot;
+        theFileChooser = new JFileChooser(new File("."));   //opens current working directory
+        savedOrNot = theFileChooser.showSaveDialog(null);     // if returns 0 they saved file if 1 they exited
+
+        if(theFileChooser.getSelectedFile().exists())
+        {
+            int n = JOptionPane.showConfirmDialog(this,
+                        "Do You Want to Overwrite File?",
+                        "Confirm Overwrite",
+                        JOptionPane.YES_NO_OPTION);{
+
+                if (n == JOptionPane.YES_OPTION){
+                        theFileChooser.approveSelection();
+                    }
+                else
+                    theFileChooser.approveSelection();
+            }
+        }
+    }
+
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
+        
+        
+    }
+
+
+    
+    @Override
+    public void mouseClicked(java.awt.event.MouseEvent e) {
+        
+        
+    }
+
+    @Override
+    public void mousePressed(java.awt.event.MouseEvent e) {
+        
+        
+    }
+
+    @Override
+    public void mouseReleased(java.awt.event.MouseEvent e) {
+        
+        
+    }
+
+    @Override
+    public void mouseEntered(java.awt.event.MouseEvent e) {
+        
+        
+    }
+
+    @Override
+    public void mouseExited(java.awt.event.MouseEvent e) {
         
         
     }

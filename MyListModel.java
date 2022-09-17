@@ -7,35 +7,33 @@ public class MyListModel extends DefaultListModel<TripRecord>
 
     //======================================DATA MEMBERS ========================================================
 
-    JList<String> displayList;                           // displays their names
-    JScrollPane tripScrollPane;
+    String nameOfFile;                                        //store the name of the file?
+    int numberOfTripRecords = 0;                             // keeping track of the number of names added
 
-    String name;
-    int numberOfTripRecords;                             // keeping track of the number of names added
-
-
-
-    //=======================================Constructor ==========================================================
+    //=======================================Constructors ==========================================================
     MyListModel()
-    {
-        displayList = new JList<String>();
-        tripScrollPane = new JScrollPane(displayList);
+    {  
         
     }
+
+    MyListModel(DataInputStream dis)
+    {
+
+    }
+
+//==========================================Methods // ============================================================
+
 
     void Store(DataOutputStream dos)
     {
         try {
-            dos.writeUTF(name);
+            dos.writeUTF(nameOfFile);
             
         } catch (IOException e) {
             System.out.println("Error, could not write the name. ");
         }
     }
 
-    @Override public String toString() 
-    { 
-        return name; 
-    }
+    
 
 }
