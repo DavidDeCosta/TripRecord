@@ -20,7 +20,7 @@ public class TripRecord {
     {
         try 
         {
-            name = dis.readUTF();
+            this.name = dis.readUTF();
         } 
         catch (IOException e) 
         {

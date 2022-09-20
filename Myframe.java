@@ -13,7 +13,7 @@ public class Myframe extends JFrame
     Dimension screenSize;
     Toolkit toolkit;
     MyListModel justAListModel;
-    MyListModel anotherListModel;
+//    MyListModel anotherListModel;
     TripRecord record;
 
     JMenuBar menuBar;
@@ -191,19 +191,16 @@ public class Myframe extends JFrame
 
     void handleDelete()
     {
-        int index;
-        index = displayList.getSelectedIndex();
-        if(index != -1)
+        int index[];
+        index = displayList.getSelectedIndices();
+        for(int n  = index.length-1; n >= 0; n--)
         {
-        justAListModel.remove(index);
-        justAListModel.numberOfTripRecords -= 1;
-        System.out.println("There are " + justAListModel.numberOfTripRecords + " record in the list");
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(this, "select something to remove");
+            justAListModel.removeElementAt(index[n]);
+            justAListModel.numberOfTripRecords -= 1;
+            System.out.println("There are " + justAListModel.numberOfTripRecords + " record in the list");
         }
     }
+    
 
     void handleSaveAs()
     {
@@ -266,8 +263,8 @@ public class Myframe extends JFrame
             try
             {
                 dis = new DataInputStream(new FileInputStream(theFileChooser.getSelectedFile()));
-                anotherListModel = new MyListModel(dis);
-//                justAListModel = new MyListModel(dis);
+//                anotherListModel = new MyListModel(dis);
+                justAListModel = new MyListModel(dis);
 
             }
             catch(FileNotFoundException e)
