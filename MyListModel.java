@@ -18,18 +18,35 @@ public class MyListModel extends DefaultListModel<TripRecord>
 
     MyListModel(DataInputStream dis)
     {
-
+        try 
+        {
+            numberOfTripRecords = dis.readInt();               //tells us how many names are stored
+            for(int n = 0; n < numberOfTripRecords; n++)
+            {
+                addElement(new TripRecord(dis));               //put the element from a file into the JList
+            }
+        } 
+        catch (IOException e) 
+        {
+            JOptionPane.showMessageDialog(null, "Could not read file");
+        }
     }
 
 //==========================================Methods // ============================================================
 
 
-    void Store(DataOutputStream dos)
+    void store(DataOutputStream dos)
     {
-        try {
-            dos.writeUTF(nameOfFile);
-            
-        } catch (IOException e) {
+        try 
+        {
+            dos.writeInt(size());
+            for(int n = 0; n < size(); n++)
+            {
+                elementAt(n).store(dos);
+            }
+        }
+        catch (IOException e)
+        {
             System.out.println("Error, could not write the name. ");
         }
     }

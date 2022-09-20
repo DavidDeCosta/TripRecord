@@ -1,10 +1,8 @@
 import javax.swing.*;                           //for JButton
 import javax.swing.event.*;                    //for ChangeListener
-
 import org.w3c.dom.events.MouseEvent;
-
 import java.awt.event.*;                       // for ActionListener
-import java.io.File;
+import java.io.*;
 import java.awt.*;                             // for Dimension and Toolkit
 
 public class Myframe extends JFrame
@@ -15,6 +13,7 @@ public class Myframe extends JFrame
     Dimension screenSize;
     Toolkit toolkit;
     MyListModel justAListModel;
+    MyListModel anotherListModel;
     TripRecord record;
 
     JMenuBar menuBar;
@@ -41,7 +40,7 @@ public class Myframe extends JFrame
 
     String userName;
 
-    JFileChooser theFileChooser;
+    JFileChooser theFileChooser;                  
 
     JList<String> displayList;                           // displays their names
     JScrollPane tripScrollPane;
@@ -58,7 +57,7 @@ public class Myframe extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            //when close frame the program stops
         setTitle("Project 2 Trip Record");
 
-
+        theFileChooser = new JFileChooser(".");   //opens current working directory
         addComponents();
 
         setVisible(true);
@@ -80,9 +79,11 @@ public class Myframe extends JFrame
         add(southPanel, BorderLayout.SOUTH);
 
         load = new JButton("load");
+        load.addActionListener(this);
         southPanel.add(load);
 
         save = new JButton("save");
+        save.addActionListener(this);
         southPanel.add(save);
 
         saveAs = new JButton("saveAs");
@@ -142,8 +143,6 @@ public class Myframe extends JFrame
  
     }
 
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -162,7 +161,7 @@ public class Myframe extends JFrame
         }
         else if(e.getActionCommand().equals("save"))
         {
-
+            handleSave();
         }
         else if(e.getActionCommand().equals("delete"))
         {
@@ -170,7 +169,7 @@ public class Myframe extends JFrame
         }
         else if(e.getActionCommand().equals("load"))
         {
-
+            handleLoad();
         }
         else if(e.getActionCommand().equals("clear"))
         {
@@ -208,62 +207,115 @@ public class Myframe extends JFrame
 
     void handleSaveAs()
     {
-        String theFileSaveName;
-        int savedOrNot;
-        theFileChooser = new JFileChooser(new File("."));   //opens current working directory
+        int savedOrNot;                                               // did they cancel or save?
+        File theFileTheUserChooses;                                   // file for what they typed in or picked?
+        DataOutputStream dos;                                          // will pass the File to the dos
+
         savedOrNot = theFileChooser.showSaveDialog(null);     // if returns 0 they saved file if 1 they exited
-
-        if(theFileChooser.getSelectedFile().exists())
+        if(savedOrNot == JFileChooser.APPROVE_OPTION)
         {
-            int n = JOptionPane.showConfirmDialog(this,
-                        "Do You Want to Overwrite File?",
-                        "Confirm Overwrite",
-                        JOptionPane.YES_NO_OPTION);{
+            theFileTheUserChooses = theFileChooser.getSelectedFile();           //grabs the file the user types or selected
+            if(theFileTheUserChooses.exists())
+            {
+                JOptionPane.showMessageDialog(this,"File already Exists.");
+            }
+            else
+            {
+                try 
+                {
+                    dos = new DataOutputStream(new FileOutputStream(theFileTheUserChooses));     //form a dos with the file
+                    justAListModel.store(dos);                                                   // store it to write to later
+                }
+                catch (FileNotFoundException e1) 
+                {
+                    JOptionPane.showMessageDialog(this, "Could not save the file");
+                }
+            }
+        }   
+    }
 
-                if (n == JOptionPane.YES_OPTION){
-                        theFileChooser.approveSelection();
-                    }
-                else
-                    theFileChooser.approveSelection();
+    void handleSave()
+    {
+        DataOutputStream dos;
+        if(theFileChooser.getSelectedFile() == null)
+        {
+            handleSaveAs();
+        }
+        else
+        {
+            try 
+            {
+                dos = new DataOutputStream(new FileOutputStream(theFileChooser.getSelectedFile()));     //form a dos with the file
+                justAListModel.store(dos);                                                   // store it to write to later
+            }
+            catch (FileNotFoundException e1) 
+            {
+                JOptionPane.showMessageDialog(this, "Could not save the file");
+            }
+        }
+    }
+
+    void handleLoad()
+    {
+        DataInputStream dis;
+        int fileChooser;
+        fileChooser = theFileChooser.showOpenDialog(null);
+
+        if(fileChooser == JFileChooser.APPROVE_OPTION)
+        {
+            try
+            {
+                dis = new DataInputStream(new FileInputStream(theFileChooser.getSelectedFile()));
+                anotherListModel = new MyListModel(dis);
+//                justAListModel = new MyListModel(dis);
+
+            }
+            catch(FileNotFoundException e)
+            {
+                JOptionPane.showMessageDialog(this, "Error, could not load");
             }
         }
     }
 
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        
-        
-    }
-
-
-    
-    @Override
-    public void mouseClicked(java.awt.event.MouseEvent e) {
+    public void valueChanged(ListSelectionEvent e) 
+    {
         
         
     }
 
     @Override
-    public void mousePressed(java.awt.event.MouseEvent e) {
+    public void mouseClicked(java.awt.event.MouseEvent e) 
+    {
         
         
     }
 
     @Override
-    public void mouseReleased(java.awt.event.MouseEvent e) {
+    public void mousePressed(java.awt.event.MouseEvent e) 
+    {
         
         
     }
 
     @Override
-    public void mouseEntered(java.awt.event.MouseEvent e) {
+    public void mouseReleased(java.awt.event.MouseEvent e) 
+    {
         
         
     }
 
     @Override
-    public void mouseExited(java.awt.event.MouseEvent e) {
+    public void mouseEntered(java.awt.event.MouseEvent e) 
+    {
+        
+        
+    }
+
+    @Override
+    public void mouseExited(java.awt.event.MouseEvent e) 
+    {
         
         
     }

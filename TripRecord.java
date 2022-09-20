@@ -1,6 +1,5 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import javax.swing.JOptionPane;
 
 public class TripRecord {
 
@@ -19,7 +18,14 @@ public class TripRecord {
 
     TripRecord(DataInputStream dis)
     {
-
+        try 
+        {
+            name = dis.readUTF();
+        } 
+        catch (IOException e) 
+        {
+            JOptionPane.showMessageDialog(null, "Could not read name");
+        }
     }
 
 //=========================================Methods //===================================================
