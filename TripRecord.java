@@ -32,19 +32,21 @@ public class TripRecord {
 
     void store(DataOutputStream dos)
     {
-        try {
+        try 
+        {
             dos.writeUTF(name);
-        } catch (IOException e) {
-            
+        } 
+        catch (IOException e) 
+        {
             e.printStackTrace();
         }
     }
 
 
-     @Override 
+    @Override 
     public String toString() 
     { 
-        return name; 
+        return name;
     }
 
 }

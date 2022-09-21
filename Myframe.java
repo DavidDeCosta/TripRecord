@@ -1,19 +1,17 @@
 import javax.swing.*;                           //for JButton
 import javax.swing.event.*;                    //for ChangeListener
-import org.w3c.dom.events.MouseEvent;
 import java.awt.event.*;                       // for ActionListener
 import java.io.*;
 import java.awt.*;                             // for Dimension and Toolkit
 
 public class Myframe extends JFrame
-                        implements ActionListener, ListSelectionListener, MouseListener
+                        implements ActionListener, ListSelectionListener
 {
     //=======================================DATA MEMBERS =====================================================
 
     Dimension screenSize;
     Toolkit toolkit;
     MyListModel justAListModel;
-//    MyListModel anotherListModel;
     TripRecord record;
 
     JMenuBar menuBar;
@@ -42,7 +40,7 @@ public class Myframe extends JFrame
 
     JFileChooser theFileChooser;                  
 
-    JList<String> displayList;                           // displays their names
+    JList<TripRecord> displayList;                           // displays their names
     JScrollPane tripScrollPane;
 
 
@@ -113,15 +111,16 @@ public class Myframe extends JFrame
         //===================================setting up the JMenu Bar  //============================================
         menuBar = new JMenuBar();
         add(menuBar,BorderLayout.NORTH);
-        
 
         theMenuOnTheBar = new JMenu("File");
         menuBar.add(theMenuOnTheBar);
 
         loadFromMenu = new JMenuItem("load");
+        loadFromMenu.addActionListener(this);
         theMenuOnTheBar.add(loadFromMenu);
 
         saveFromMenu = new JMenuItem("save");
+        saveFromMenu.addActionListener(this);
         theMenuOnTheBar.add(saveFromMenu);
 
         deleteFromMenu = new JMenuItem("delete");
@@ -145,7 +144,6 @@ public class Myframe extends JFrame
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         
         if(e.getActionCommand().equals("exit"))
         {
@@ -179,7 +177,6 @@ public class Myframe extends JFrame
         
     }
 
-
     void handleAdd()
     {
         userName = JOptionPane.showInputDialog("Enter a name");  //userName will hold the response from the user
@@ -200,12 +197,12 @@ public class Myframe extends JFrame
             System.out.println("There are " + justAListModel.numberOfTripRecords + " record in the list");
         }
     }
-    
 
     void handleSaveAs()
     {
         int savedOrNot;                                               // did they cancel or save?
         File theFileTheUserChooses;                                   // file for what they typed in or picked?
+        File theFileTheUserChooses2;
         DataOutputStream dos;                                          // will pass the File to the dos
 
         savedOrNot = theFileChooser.showSaveDialog(null);     // if returns 0 they saved file if 1 they exited
@@ -214,12 +211,31 @@ public class Myframe extends JFrame
             theFileTheUserChooses = theFileChooser.getSelectedFile();           //grabs the file the user types or selected
             if(theFileTheUserChooses.exists())
             {
-                JOptionPane.showMessageDialog(this,"File already Exists.");
+                
+                int n = JOptionPane.showConfirmDialog(this, "Do you want to Overwrite the file? ", "Confirm Overwrite", JOptionPane.YES_NO_OPTION);
+                if(n == JOptionPane.YES_OPTION)
+                {
+                try 
+                {
+                    theFileTheUserChooses = theFileChooser.getSelectedFile();           //grabs the file the user types or selected
+                    dos = new DataOutputStream(new FileOutputStream(theFileTheUserChooses));     //form a dos with the file
+                    justAListModel.store(dos);                                                   // store it to write to later
+                }
+                catch (FileNotFoundException e1) 
+                {
+                    JOptionPane.showMessageDialog(this, "Could not save the file");
+                }
+                }
+                else
+                {
+                    System.out.println("Do nothing");
+                }
             }
             else
             {
                 try 
                 {
+                    theFileTheUserChooses2 = theFileChooser.getSelectedFile();           //grabs the file the user types or selected
                     dos = new DataOutputStream(new FileOutputStream(theFileTheUserChooses));     //form a dos with the file
                     justAListModel.store(dos);                                                   // store it to write to later
                 }
@@ -228,8 +244,9 @@ public class Myframe extends JFrame
                     JOptionPane.showMessageDialog(this, "Could not save the file");
                 }
             }
-        }   
-    }
+        }
+    }   
+
 
     void handleSave()
     {
@@ -263,8 +280,9 @@ public class Myframe extends JFrame
             try
             {
                 dis = new DataInputStream(new FileInputStream(theFileChooser.getSelectedFile()));
-//                anotherListModel = new MyListModel(dis);
                 justAListModel = new MyListModel(dis);
+                displayList.setModel(justAListModel);
+
 
             }
             catch(FileNotFoundException e)
@@ -277,41 +295,6 @@ public class Myframe extends JFrame
 
     @Override
     public void valueChanged(ListSelectionEvent e) 
-    {
-        
-        
-    }
-
-    @Override
-    public void mouseClicked(java.awt.event.MouseEvent e) 
-    {
-        
-        
-    }
-
-    @Override
-    public void mousePressed(java.awt.event.MouseEvent e) 
-    {
-        
-        
-    }
-
-    @Override
-    public void mouseReleased(java.awt.event.MouseEvent e) 
-    {
-        
-        
-    }
-
-    @Override
-    public void mouseEntered(java.awt.event.MouseEvent e) 
-    {
-        
-        
-    }
-
-    @Override
-    public void mouseExited(java.awt.event.MouseEvent e) 
     {
         
         

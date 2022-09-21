@@ -6,8 +6,6 @@ public class MyListModel extends DefaultListModel<TripRecord>
 {
 
     //======================================DATA MEMBERS ========================================================
-
-    String nameOfFile;                                        //store the name of the file?
     int numberOfTripRecords = 0;                             // keeping track of the number of names added
 
     //=======================================Constructors ==========================================================
@@ -50,7 +48,6 @@ public class MyListModel extends DefaultListModel<TripRecord>
             System.out.println("Error, could not write the name. ");
         }
     }
-
     
-
 }
+
