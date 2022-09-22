@@ -86,6 +86,8 @@ public class Myframe extends JFrame
 
         saveAs = new JButton("saveAs");
         southPanel.add(saveAs);
+        saveAs.setToolTipText("alt + s");
+        saveAs.setMnemonic('s');             //press alt + d to delete
         saveAs.addActionListener(this);
 
         add = new JButton("add");
